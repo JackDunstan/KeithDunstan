@@ -59,3 +59,5 @@ npm run build    # production build (output → public/, what Netlify deploys)
 **Deploy:** `git push` to `master` triggers Netlify build automatically (configured in `netlify.toml`, publishes from `public/`).
 
 **OCR tooling:** `ocr/` contains a Node.js OCR pipeline (`ocr/index.js`) using `node-tesseract-ocr` for processing scanned documents into markdown.
+
+**Trove tooling:** `trove/` contains Python scripts for fetching Keith Dunstan's articles from the National Library of Australia's Trove API v3. See `trove/README.md` for full context, setup, and workflow. Output goes to `trove/output/` for review before moving to `src/posts/bulletin/`.

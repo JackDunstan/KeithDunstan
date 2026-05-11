@@ -14,7 +14,7 @@ Eleventy, but the output format here is not coupled to it.
 - **Project**: Digital archive of Keith Dunstan (1925–2013), Australian journalist
 - **Live site**: keithdunstan.org
 - **Repo**: github.com/JackDunstan/KeithDunstan
-- **Content target**: `src/articles/bulletin/` (after manual review of output/)
+- **Content target**: `src/posts/bulletin/` (after manual review of output/)
 - **Frontmatter rules**: See `../CLAUDE.md` — tags are granular proper nouns only
 - **Attribution rule**: Every article must link back to its Trove source URL
 - **Keith's pen name in The Bulletin**: 'Batman' — column titled 'Batman's [topic]'
@@ -70,7 +70,7 @@ Then:
 1. Open `output/master_results.csv` to review what was found
 2. Review individual `.md` files in `output/`
 3. Complete the frontmatter (`summary`, `tags`) per `../CLAUDE.md`
-4. Move approved files to `src/articles/bulletin/`
+4. Move approved files to `src/posts/bulletin/`
 5. `git add`, `git commit`, `git push` — Netlify builds automatically
 
 ---
@@ -90,7 +90,7 @@ tags: []
 ---
 ```
 
-Before moving to `src/articles/bulletin/`, you must:
+Before moving to `src/posts/bulletin/`, you must:
 - Write a proper `summary` (one or two sentences, factual, third person)
 - Add `tags` (5–15 granular proper nouns per `../CLAUDE.md`)
 - Review the article text for OCR errors
@@ -150,7 +150,7 @@ For other publications, change `l-title` to the publication name as it appears i
 2. Update `SEARCH_TERMS`, `DATE_FROM`, `DATE_TO`, and `l-title` parameter
 3. Update the CSV log filename
 4. Run and review output
-5. Move approved files to `src/articles/[publication-slug]/`
+5. Move approved files to `src/posts/[publication-slug]/`
 
 ---
 
