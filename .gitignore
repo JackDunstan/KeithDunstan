@@ -6,8 +6,7 @@ public
 # Environment variables — never commit
 .env
 
-# Generated markdown output — stage here, move manually to src/articles/bulletin/
-output/
+
 
 # Python
 __pycache__/
