@@ -60,4 +60,4 @@ npm run build    # production build (output → public/, what Netlify deploys)
 
 **OCR tooling:** `ocr/` contains a Node.js OCR pipeline (`ocr/index.js`) using `node-tesseract-ocr` for processing scanned documents into markdown.
 
-**Trove tooling:** `trove/` contains Python scripts for fetching Keith Dunstan's articles from the National Library of Australia's Trove API v3. See `trove/README.md` for full context, setup, and workflow. Output goes to `trove/output/` for review before moving to `src/posts/bulletin/`.
+**Trove tooling:** `trove/` contains Python scripts for fetching Keith Dunstan's articles from the National Library of Australia's Trove API v3. Pipeline: `setup.py` (once) → `fetch_batman.py` / `fetch_byline.py` → `deduplicate.py` → `remove_duplicates.py` → `triage.py` (interactive review) → move to `src/posts/[publication-slug]/`. See `trove/README.md` for full context.

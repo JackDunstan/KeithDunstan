@@ -14,7 +14,7 @@ Eleventy, but the output format here is not coupled to it.
 - **Project**: Digital archive of Keith Dunstan (1925–2013), Australian journalist
 - **Live site**: keithdunstan.org
 - **Repo**: github.com/JackDunstan/KeithDunstan
-- **Content target**: `src/posts/bulletin/` (after manual review of output/)
+- **Content target**: `src/posts/[publication-slug]/` (after triage and manual review)
 - **Frontmatter rules**: See `../CLAUDE.md` — tags are granular proper nouns only
 - **Attribution rule**: Every article must link back to its Trove source URL
 - **Keith's pen name in The Bulletin**: 'Batman' — column titled 'Batman's [topic]'
@@ -48,6 +48,15 @@ cp .env.example .env
 Open `.env` and replace `your_api_key_here` with your Trove API key.
 The `.env` file is gitignored — never commit it.
 
+### 3. Create output folder structure (once)
+
+```bash
+python setup.py
+```
+
+This creates `output/<publication>/stubs/`, `transcribed/`, and `rejected/`
+for all known publications. Safe to re-run.
+
 ---
 
 ## Workflow
@@ -61,23 +70,40 @@ python fetch_batman.py
 # Pass 2 — Keith Dunstan byline articles
 python fetch_byline.py
 
-# Merge and flag duplicates
+# Merge CSV logs and flag duplicate Trove IDs
 python deduplicate.py
+
+# Delete flagged duplicates from stubs/
+python remove_duplicates.py
+
+# Interactive triage — opens each article in browser, move to transcribed/ or rejected/
+python triage.py
 ```
 
 Then:
 
 1. Open `output/master_results.csv` to review what was found
-2. Review individual `.md` files in `output/`
-3. Complete the frontmatter (`summary`, `tags`) per `../CLAUDE.md`
-4. Move approved files to `src/posts/bulletin/`
-5. `git add`, `git commit`, `git push` — Netlify builds automatically
+2. Complete the frontmatter (`summary`, `tags`) on files in `transcribed/` per `../CLAUDE.md`
+3. Move approved files from `output/<publication>/transcribed/` to `src/posts/<publication-slug>/`
+4. `git add`, `git commit`, `git push` — Netlify builds automatically
+
+---
+
+## Output structure
+
+```
+output/
+  <publication>/
+    stubs/        — raw output from fetch scripts; awaiting triage
+    transcribed/  — confirmed Keith articles with full text added
+    rejected/     — noise, family mentions, not written by Keith
+```
 
 ---
 
 ## Output format
 
-Each `.md` file is written with minimal frontmatter:
+Each `.md` stub is written with minimal frontmatter:
 
 ```yaml
 ---
@@ -101,9 +127,31 @@ Before moving to `src/posts/bulletin/`, you must:
 
 | Script | Purpose |
 |--------|---------|
+| `setup.py` | Creates output folder structure (run once after cloning) |
 | `fetch_batman.py` | Pass 1: searches for Batman column variants |
 | `fetch_byline.py` | Pass 2: searches for Keith Dunstan byline |
 | `deduplicate.py` | Merges CSV logs, flags duplicate Trove IDs |
+| `remove_duplicates.py` | Deletes flagged duplicates from stubs/ |
+| `triage.py` | Interactive review: keep stub / transcribed / reject |
+| `diagnose.py` | Tests Trove API connectivity and surfaces search parameters |
+| `diagnose2.py` | Finds correct response structure and category for The Bulletin |
+
+### triage.py commands
+
+```
+k  — keep as stub (leave in stubs/, revisit later)
+t  — transcribed (move to transcribed/ — article confirmed, full text added)
+r  — reject (move to rejected/ — noise, family mention, not by Keith)
+q  — quit and save progress
+```
+
+Progress is saved to `output/triage_progress.txt` — safe to quit and resume.
+
+```bash
+python triage.py                  # start or resume from last position
+python triage.py --from-start     # restart from the beginning
+python triage.py --rejected-only  # re-review files already in rejected/
+```
 
 ### Search terms used
 
@@ -149,8 +197,9 @@ For other publications, change `l-title` to the publication name as it appears i
 1. Duplicate `fetch_batman.py` or `fetch_byline.py`
 2. Update `SEARCH_TERMS`, `DATE_FROM`, `DATE_TO`, and `l-title` parameter
 3. Update the CSV log filename
-4. Run and review output
-5. Move approved files to `src/posts/[publication-slug]/`
+4. Add the new slug to the `PUBLICATIONS` list in `setup.py` and re-run it
+5. Run fetch and triage scripts as normal
+6. Move approved files to `src/posts/[publication-slug]/`
 
 ---
 
@@ -168,3 +217,6 @@ For other publications, change `l-title` to the publication name as it appears i
 
 **Rate limit errors (HTTP 429)**
 → The `time.sleep(0.5)` between pages should prevent this. If it persists, increase the sleep value.
+
+**`output/` folders don't exist**
+→ Run `python setup.py` to create the folder structure.
