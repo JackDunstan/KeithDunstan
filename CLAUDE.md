@@ -50,6 +50,47 @@ tags:
 ---
 ```
 
+---
+
+## Trove API Pipeline
+
+Scripts in `trove/` fetch Keith Dunstan's articles from the National Library of Australia's Trove database via API v3. Output: `.md` files for Eleventy.
+
+**Setup:**
+- `cd trove`
+- `python3 -m venv .venv`
+- `source .venv/bin/activate`
+- `pip install -r requirements.txt`
+- Copy `.env.example` to `.env` and add Trove API key
+
+**Scripts:**
+- `diagnose_*.py` — Test API for specific publications (e.g., `diagnose_walkabout.py`)
+- `fetch_*.py` — Fetch article stubs (e.g., `fetch_batman.py` for Bulletin, `fetch_byline.py` for general)
+- `deduplicate.py` — Remove duplicates
+- `triage.py` — Interactive review of stubs (keep/transcribe/reject)
+- `remove_duplicates.py` — Automated duplicate removal
+
+**Workflow:**
+1. Fetch stubs → `trove/output/[publication]/stubs/`
+2. Triage with `python triage.py` → move to `transcribed/` or `rejected/`
+3. Move transcribed to `src/posts/[publication]/`
+4. Commit and push
+
+**Key notes:**
+- Preserve Trove source URLs in output
+- Tags: granular proper nouns only
+- See `trove/README.md` and `todo.md` for details
+
+---
+
+## Outstanding Work
+
+See `todo.md` for full tracking of:
+- Bulletin and Walkabout article triage/transcription
+- Physical transcription for non-Trove publications
+- Book transcription progress
+- Site technical improvements (search, theme migration)
+
 **Build:**
 ```bash
 npm run watch    # local dev (output → dev/)
