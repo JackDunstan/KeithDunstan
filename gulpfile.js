@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var plumber = require('gulp-plumber');
 var cleanCSS = require('gulp-clean-css');
-var sass = require('gulp-sass');
+var sass = require('gulp-sass')(require('sass'));
 var clean = require('gulp-clean');
 var browserSync = require('browser-sync').create();
 var rename = require('gulp-rename');
@@ -14,7 +14,7 @@ var reload      = browserSync.reload;
 var cfg = require( './gulpconfig.json' );
 var paths = cfg.paths;
 
-sass.compiler = require('node-sass');
+sass.compiler = require('sass');
 
 gulp.task('dist-assets', function (done) {
     gulp.src('./src/js/**.*')
